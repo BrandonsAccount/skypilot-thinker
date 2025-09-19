@@ -14,7 +14,7 @@ import json
 from typing import Any, Dict, Tuple
 from jsonschema import Draft202012Validator, FormatChecker
 from jsonschema.exceptions import ValidationError as JSValidationError
-from lib.skylogger.skypilot_logger import fancy_logger
+from lib.skyhelper_logger.skyhelper_logger import fancy_logger
 
 log = fancy_logger(__name__)
 
@@ -84,7 +84,6 @@ ENVELOPE_SCHEMA = {
             "properties": {
                 "user_id":     {"$ref": "#/$defs/nonEmptyString"},
                 "session_id":  {"$ref": "#/$defs/nonEmptyString"},
-                "feedback":    {"type": "string"},  # may be empty
                 "prompt":      {"$ref": "#/$defs/nonEmptyString"},
                 "llmprovider": {"$ref": "#/$defs/nonEmptyString"},
                 "llm":      {"$ref": "#/$defs/nonEmptyString"},
@@ -168,12 +167,7 @@ def validate_envelope(envelope: Dict[str, Any]) -> Dict[str, Any]:
     return env_norm
 
 def validate_or_400(envelope: Dict[str, Any]) -> Tuple[int, Dict[str, Any]]:
-    """
-    WHAT:
-      Handler-friendly wrapper: returns (status, body).
-    WHY:
-      Keep your route code tiny and consistent.
-    """
+    # WHAT: Handler-friendly wrapper: returns (status, body).
     try:
         payload = validate_envelope(envelope)
         log.success("validated request payload")

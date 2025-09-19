@@ -1,5 +1,5 @@
 import os, json
-from lib.skylogger.skypilot_logger import fancy_logger
+from lib.skyhelper_logger.skyhelper_logger import fancy_logger
 from typing import Any, Dict, Optional, Union
 from fastapi import FastAPI, Request
 from openai import OpenAI
@@ -38,6 +38,7 @@ async def process(request: Request):
     # use your prompt field if present; otherwise fall back to the whole params blob
     # user_text = params.get("prompt") or json.dumps(params)
     try:
+        log.info("Calling OpenAI via chat.completions...")
         resp = client.chat.completions.create(
             model=llm,
             messages=[{"role": "system", "content": params},],
